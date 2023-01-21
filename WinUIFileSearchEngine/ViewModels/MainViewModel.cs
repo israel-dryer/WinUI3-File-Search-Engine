@@ -9,6 +9,8 @@ using WinUIFileSearchEngine.Enums;
 using WinUIFileSearchEngine.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinUIEx;
+using System.Diagnostics;
 
 namespace WinUIFileSearchEngine.ViewModels;
 
@@ -21,18 +23,20 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private int searchType;
     [ObservableProperty]
-    private bool searchIsEnabled;
-    [ObservableProperty]
-    private bool progressIsEnabled;
-    [ObservableProperty]
     private ObservableCollection<SearchResult> searchResults;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(GetSearchResultsCommand))]
+    private bool isBusy;
     private readonly BackgroundWorker backgroundWorker;
+    private readonly WindowEx mainWindow;
 
-    public MainViewModel()
+    public MainViewModel(WindowEx window)
     {
+
+        mainWindow = window;
+
         // Initial UI properties
         SearchTerm = "txt";
-        SearchIsEnabled = true;
         SearchType = (int)SearchTypes.EndsWith;
         SearchResults = new();
         var startFolder = Environment.SpecialFolder.MyDocuments;
@@ -58,8 +62,7 @@ public partial class MainViewModel : ObservableObject
 
     private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
-        SearchIsEnabled = true;
-        ProgressIsEnabled = false;
+        IsBusy = false;
         CancelBackgroundTasks();
     }
 
@@ -70,9 +73,9 @@ public partial class MainViewModel : ObservableObject
         {
             SearchTypes.Contains => $"*{SearchTerm}*",
             SearchTypes.StartsWith => $"{SearchTerm}*",
-            _ => $"{SearchTerm}*"
+            _ => $"*{SearchTerm}"
         };
-
+        Debug.WriteLine(searchPattern());
         // Create an enumerator and extract the relevant files
         var fileQuery = Directory.EnumerateFiles(
             SearchFolderPath, searchPattern(), SearchOption.AllDirectories);
@@ -93,22 +96,28 @@ public partial class MainViewModel : ObservableObject
 
     }
 
-    public void GetSearchResults()
+    [RelayCommand(CanExecute = nameof(CanSearch))]
+    public void GetSearchResults(object parameter)
     {
+        IsBusy = true;
         SearchResults.Clear();
-        SearchIsEnabled = false;
-        ProgressIsEnabled = true;
         backgroundWorker.RunWorkerAsync();
     }
 
-    public async void GetFolderPath(IntPtr hwnd)
+    public bool CanSearch(object parameter)
+    {
+        return !IsBusy;
+    }
+
+    [RelayCommand]
+    public async void GetFolderPath()
     {
         var picker = new FolderPicker()
         {
             SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
             ViewMode = PickerViewMode.List
         };
-        InitializeWithWindow.Initialize(picker, hwnd);
+        InitializeWithWindow.Initialize(picker, mainWindow.GetWindowHandle());
         var storageFolder = await picker.PickSingleFolderAsync();
         if (storageFolder != null)
             SearchFolderPath = storageFolder.Path;

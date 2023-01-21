@@ -2,19 +2,6 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using WinUIEx;
 using WinUIFileSearchEngine.ViewModels;
 
@@ -26,7 +13,7 @@ namespace WinUIFileSearchEngine;
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainWindow : WinUIEx.WindowEx
+public sealed partial class MainWindow : WindowEx
 {
     public MainViewModel ViewModel { get; set; }
 
@@ -34,22 +21,7 @@ public sealed partial class MainWindow : WinUIEx.WindowEx
     {
         InitializeComponent();
         this.SetIcon("Assets/search.ico");
-        Closed += MainWindow_Closed;
-        ViewModel = new();
-    }
-
-    private void MainWindow_Closed(object sender, WindowEventArgs args)
-    {
-        ViewModel.CancelBackgroundTasks();
-    }
-
-    private void SearchButton_Click(object sender, RoutedEventArgs e)
-    {
-        ViewModel.GetSearchResults();
-    }
-
-    private void BrowseButton_Click(object sender, RoutedEventArgs e)
-    {
-        ViewModel.GetFolderPath(this.GetWindowHandle());
+        Closed += (object sender, WindowEventArgs e) => ViewModel.CancelBackgroundTasks();
+        ViewModel = new(this);
     }
 }

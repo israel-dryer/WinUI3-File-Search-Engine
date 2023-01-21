@@ -61,7 +61,7 @@
                 Grid.Row="0" Grid.Column="2"
                 Content="Browse"
                 Width="75"
-                Click="BrowseButton_Click"/>
+                Command="{x:Bind ViewModel.GetFolderPathCommand}"/>
 
             <!--Search input row 2-->
             <TextBlock 
@@ -111,17 +111,15 @@
 
         <ProgressBar Name="SearchProgressBar" 
                      Grid.Row="2"
-                     IsIndeterminate="{x:Bind ViewModel.ProgressIsEnabled, Mode=TwoWay}"/>
+                     IsIndeterminate="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"/>
 
         <!--Submit button-->
         <Button Name="SearchButton"
-                IsEnabled="{x:Bind ViewModel.SearchIsEnabled, Mode=TwoWay}"
                 Grid.Row="3" 
                 Content="Search"
                 HorizontalAlignment="Stretch"
-                Click="SearchButton_Click"
+                Command="{x:Bind ViewModel.GetSearchResultsCommand}"
                 Background="{StaticResource SystemAccentColorDark1}"
                 Foreground="{StaticResource TextOnAccentFillColorDefault}"/>
     </Grid>
-
 </winex:WindowEx>
