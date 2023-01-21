@@ -4,6 +4,6 @@ This is a personal project for learning the WinUI platform and is not intended t
 
 Here is are some screenshots:
 
-![light theme application screenshot](https://github.com/israel-dryer/WinUI3-File-Search-Engine/blob/main/WinUIFileSearchEngine/Examples/light-theme.png)
+![light theme application screenshot](WinUIFileSearchEngine/Examples/light-theme.png)
 
-![dark theme application screenshot](https://github.com/israel-dryer/WinUI3-File-Search-Engine/blob/main/WinUIFileSearchEngine/Examples/dark-theme.png)
+![dark theme application screenshot](WinUIFileSearchEngine/Examples/dark-theme.png)
