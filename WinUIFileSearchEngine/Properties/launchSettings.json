@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WinUIFileSearchEngine (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WinUIFileSearchEngine (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
