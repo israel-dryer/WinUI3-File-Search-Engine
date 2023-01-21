@@ -10,7 +10,6 @@ using WinUIFileSearchEngine.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinUIEx;
-using System.Diagnostics;
 
 namespace WinUIFileSearchEngine.ViewModels;
 
@@ -75,7 +74,6 @@ public partial class MainViewModel : ObservableObject
             SearchTypes.StartsWith => $"{SearchTerm}*",
             _ => $"*{SearchTerm}"
         };
-        Debug.WriteLine(searchPattern());
         // Create an enumerator and extract the relevant files
         var fileQuery = Directory.EnumerateFiles(
             SearchFolderPath, searchPattern(), SearchOption.AllDirectories);
